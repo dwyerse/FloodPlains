@@ -7,6 +7,7 @@ public class LevelState : MonoBehaviour
 
     public bool complete = false;
     public bool available = false;
+    public bool recentlyUpdated = false;
 
     public List<GameObject> children;
 
@@ -23,16 +24,6 @@ public class LevelState : MonoBehaviour
             available = true;
         }
 
-    }
-
-    void SetAvailable()
-    {
-        available = true;
-    }
-
-    void SetComplete()
-    {
-        complete = true;
     }
 
     public void UnlockChildren()

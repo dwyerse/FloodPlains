@@ -10,6 +10,8 @@ public class Picker : MonoBehaviour
     public Manager manager;
     GameObject currentMode = null;
     public GameObject[] indicatorPrefabs;
+    float INDICATOR_HEIGHT = 0.02f;
+
 
     Map<Vector3, GameObject> indicators = new Map<Vector3, GameObject>();
     Dictionary<GameObject, Vector3> originalIndicatorPositions = new Dictionary<GameObject, Vector3>();
@@ -39,21 +41,22 @@ public class Picker : MonoBehaviour
             {
                 GameObject pipe = Instantiate(indicatorPrefabs[i]);
                 pipe.name = "" + i;
-                pipe.transform.position = new Vector3(50 + (p * 10), 0.02f, (i * 10));
+                pipe.transform.position = new Vector3(50 + (p * 10), INDICATOR_HEIGHT, (i * 10));
 
                 pipe.transform.localScale = new Vector3(0, 0, 0);
                 LeanTween.scale(pipe, new Vector3(1f, 1f, 1f), 1f).setEaseOutBounce();
 
-                indicators[new Vector3(50 + (p * 10), 0.02f, (i * 10))] = pipe;
-                originalIndicatorPositions.Add(pipe, new Vector3(50 + (p * 10), 0.02f, (i * 10)));
+                indicators[pipe.transform.position] = pipe;
+                originalIndicatorPositions.Add(pipe, pipe.transform.position);
             }
 
         }
     }
 
     public Bridge getBridge(float x, float y)
-    {
-        return indicators[new Vector3(x * 10, 0.02f, y * 10)].GetComponent<Bridge>();
+    {   
+        print(indicators);
+        return indicators[new Vector3(x * 10, INDICATOR_HEIGHT, y * 10)].GetComponent<Bridge>();
     }
 
     Vector3 worldPosition;
@@ -196,8 +199,6 @@ public class Picker : MonoBehaviour
 
     public void RotateSplit(float x, float z, bool original)
     {
-        print(x + " : " + z);
-        print(indicators);
         if (original)
         {
             LeanTween.rotate(indicators[new Vector3(x * 10, 0.02f, z * 10)], new Vector3(0, 0, 0), 0.5f).setEaseInCubic();

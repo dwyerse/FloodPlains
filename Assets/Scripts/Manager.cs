@@ -30,12 +30,13 @@ public class Manager : MonoBehaviour
         GameObject level = GameObject.Find(currentLevel);
         LevelState levelState = level.GetComponent<LevelState>();
         levelState.complete = true;
+        levelState.recentlyUpdated = true;
         foreach (GameObject child in levelState.children)
         {
             PlayerPrefs.SetString("Available " + child.name, "true");
             child.GetComponent<LevelState>().available = true;
+            child.GetComponent<LevelState>().recentlyUpdated = true;
         }
-        menu.GetComponent<Menu>().UpdateColors();
 
     }
 
@@ -48,6 +49,7 @@ public class Manager : MonoBehaviour
         LeanTween.move(cameraTarget, menuTarget.transform.position, 1.5f).setEaseInOutCubic().setOnComplete(() =>
         {
             menu.GetComponent<Menu>().enabled = true;
+            menu.GetComponent<Menu>().UpdateColors();
         });
     }
 

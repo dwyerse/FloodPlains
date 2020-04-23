@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2138677392}
-  m_IndirectSpecularColor: {r: 0.28496882, g: 0.36952925, b: 0.48236248, a: 1}
+  m_IndirectSpecularColor: {r: 0.284968, g: 0.36952817, b: 0.4823611, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -131,7 +131,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1194392}
   - component: {fileID: 1194391}
-  - component: {fileID: 1194390}
   - component: {fileID: 1194389}
   - component: {fileID: 1194394}
   m_Layer: 0
@@ -157,7 +156,6 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_CameraOutput: 0
   m_Cameras: []
   m_RendererIndex: -1
   m_VolumeLayerMask:
@@ -169,17 +167,10 @@ MonoBehaviour:
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
+  m_ClearDepth: 1
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &1194390
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1194388}
-  m_Enabled: 1
 --- !u!20 &1194391
 Camera:
   m_ObjectHideFlags: 0
@@ -544,11 +535,11 @@ MonoBehaviour:
   prevWaterPositions: []
   houses: []
   fields: []
-  housePrefab: {fileID: 2512070046453537476, guid: d703e21a9b31ca4438d5d59f2ca8aea4,
+  housePrefab: {fileID: 4428236264678082536, guid: 690c5ae471a2d654ba21fd5d7dfb255e,
     type: 3}
   fieldPrefab: {fileID: 1287271456214364764, guid: 5ecdcee094fdd63479220bf1dc16af04,
     type: 3}
-  waterObj: {fileID: 5864460130437792401, guid: 26c49829130e74243bb35cac9025dc83,
+  waterPrefab: {fileID: 5864460130437792401, guid: 26c49829130e74243bb35cac9025dc83,
     type: 3}
   fillerAcross: {fileID: 351171424911247061, guid: c4fb6249c03829c4586f06a17c622292,
     type: 3}
@@ -607,12 +598,15 @@ MonoBehaviour:
   river: {fileID: 93138805}
   manager: {fileID: 93138806}
   indicatorPrefabs:
-  - {fileID: 7329596933439420278, guid: 36a785593d3b95e408cf80150677824a, type: 3}
-  - {fileID: 7329596933439420278, guid: 6d9410f9ef9f61141ba8b7e94a0ef125, type: 3}
-  - {fileID: 7329596933439420278, guid: 46ca8ac970b00334580eb9d285c10336, type: 3}
-  - {fileID: 7329596933439420278, guid: 7c20602b57eee4744a8cdc3e797f58a4, type: 3}
-  - {fileID: 2401251567955476759, guid: 1226e3631ecb921448d0e0441a002864, type: 3}
-  - {fileID: 5358511164788825776, guid: c2dfa0086b6a96145804a9a1f1ba911e, type: 3}
+  - {fileID: 1951806391476798182, guid: 5d9a2dd2573e26443ba0bd8f7b42b829, type: 3}
+  - {fileID: 1951806391476798182, guid: 5d9a2dd2573e26443ba0bd8f7b42b829, type: 3}
+  - {fileID: 1951806391476798182, guid: 5d9a2dd2573e26443ba0bd8f7b42b829, type: 3}
+  - {fileID: 1951806391476798182, guid: 5d9a2dd2573e26443ba0bd8f7b42b829, type: 3}
+  - {fileID: 1951806391476798182, guid: 5d9a2dd2573e26443ba0bd8f7b42b829, type: 3}
+  - {fileID: 1951806391476798182, guid: 5d9a2dd2573e26443ba0bd8f7b42b829, type: 3}
+  invalidColor:
+    serializedVersion: 2
+    rgba: 4282795590
 --- !u!114 &93138809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3658,8 +3652,8 @@ MeshCollider:
   m_GameObject: {fileID: 1283240342}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
+  m_Enabled: 0
+  serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
