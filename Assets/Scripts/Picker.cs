@@ -54,7 +54,7 @@ public class Picker : MonoBehaviour
     }
 
     public Bridge getBridge(float x, float y)
-    {   
+    {
         print(indicators);
         return indicators[new Vector3(x * 10, INDICATOR_HEIGHT, y * 10)].GetComponent<Bridge>();
     }
@@ -80,7 +80,7 @@ public class Picker : MonoBehaviour
         if (currentMode != null && Input.GetMouseButton(0))
         {
 
-            if (river.houses.Contains(new Vector3(x, 0, z)) || river.fields.Contains(new Vector3(x, 0, z)))
+            if (river.houses.Contains(new Vector3(x, LevelGenerator.HOUSE_HEIGHT, z)) || river.fields.Contains(new Vector3(x, LevelGenerator.HOUSE_HEIGHT, z)))
             {
                 currentMode.transform.position = new Vector3(x, 5, z);
                 SetObjectColor(currentMode, new Color32(0x7b, 0x7b, 0x7b, 0xFF));
@@ -91,7 +91,7 @@ public class Picker : MonoBehaviour
                 SetObjectColor(currentMode, Color.white);
             }
 
-            if ((x < 0 || z < 0 || x / 10 > river.bends.GetLength(0) - 1 || z / 10 > river.bends.GetLength(1) - 1) && new Vector3(x, 0.02f, z) != originalIndicatorPositions[currentMode])
+            if ((x < 0 || z < 0 || x / 10 > river.bends.GetLength(0) - 1 || z / 10 > river.bends.GetLength(1) - 1) && new Vector3(x, INDICATOR_HEIGHT, z) != originalIndicatorPositions[currentMode])
             {
                 SetObjectColor(currentMode, new Color32(0x7b, 0x7b, 0x7b, 0xFF));
             }
@@ -105,14 +105,14 @@ public class Picker : MonoBehaviour
                 LeanTween.move(currentMode, originalIndicatorPositions[currentMode], 0.15f);
                 SetObjectColor(currentMode, invalidColor);
             }
-            else if (indicators.Contains(new Vector3(x, 0.02f, z)))
+            else if (indicators.Contains(new Vector3(x, INDICATOR_HEIGHT, z)))
             {
-                GameObject occupier = indicators[(new Vector3(x, 0.02f, z))];
+                GameObject occupier = indicators[(new Vector3(x, INDICATOR_HEIGHT, z))];
                 indicators[occupier] = originalIndicatorPositions[occupier];
                 LeanTween.move(occupier, originalIndicatorPositions[occupier], 0.15f);
 
-                indicators[currentMode] = new Vector3(x, 0.02f, z);
-                LeanTween.move(currentMode, new Vector3(x, 0.02f, z), 0.15f);
+                indicators[currentMode] = new Vector3(x, INDICATOR_HEIGHT, z);
+                LeanTween.move(currentMode, new Vector3(x, INDICATOR_HEIGHT, z), 0.15f);
 
 
                 SetObjectColor(currentMode, invalidColor);
@@ -142,7 +142,7 @@ public class Picker : MonoBehaviour
             }
             else
             {
-                if (river.houses.Contains(new Vector3(x, 0.01f, z)) || river.fields.Contains(new Vector3(x, 0.01f, z)))
+                if (river.houses.Contains(new Vector3(x, LevelGenerator.HOUSE_HEIGHT, z)) || river.fields.Contains(new Vector3(x, LevelGenerator.HOUSE_HEIGHT, z)))
                 {
                     indicators[currentMode] = originalIndicatorPositions[currentMode];
                     LeanTween.move(currentMode, originalIndicatorPositions[currentMode], 0.15f);
@@ -150,8 +150,8 @@ public class Picker : MonoBehaviour
                 }
                 else
                 {
-                    indicators[currentMode] = new Vector3(x, 0.02f, z);
-                    LeanTween.move(currentMode, new Vector3(x, 0.02f, z), 0.15f);
+                    indicators[currentMode] = new Vector3(x, INDICATOR_HEIGHT, z);
+                    LeanTween.move(currentMode, new Vector3(x, INDICATOR_HEIGHT, z), 0.15f);
                     SetObjectColor(currentMode, invalidColor);
 
                     switch (currentMode.name)
@@ -184,10 +184,10 @@ public class Picker : MonoBehaviour
         }
         else if (currentMode == null && Input.GetMouseButtonDown(0))
         {
-            if (indicators.Contains(new Vector3(x, 0.02f, z)))
+            if (indicators.Contains(new Vector3(x, INDICATOR_HEIGHT, z)))
             {
                 river.RemoveBend(x / 10, z / 10);
-                currentMode = indicators[new Vector3(x, 0.02f, z)];
+                currentMode = indicators[new Vector3(x, INDICATOR_HEIGHT, z)];
                 indicators[currentMode] = new Vector3(x, 1, z);
                 SetObjectColor(currentMode, Color.white);
                 currentMode.transform.position = new Vector3(x, 0, z);
@@ -201,11 +201,11 @@ public class Picker : MonoBehaviour
     {
         if (original)
         {
-            LeanTween.rotate(indicators[new Vector3(x * 10, 0.02f, z * 10)], new Vector3(0, 0, 0), 0.5f).setEaseInCubic();
+            LeanTween.rotate(indicators[new Vector3(x * 10, INDICATOR_HEIGHT, z * 10)], new Vector3(0, 0, 0), 0.5f).setEaseInCubic();
         }
         else
         {
-            LeanTween.rotate(indicators[new Vector3(x * 10, 0.02f, z * 10)], new Vector3(0, 90, 0), 0.5f).setEaseInCubic();
+            LeanTween.rotate(indicators[new Vector3(x * 10, INDICATOR_HEIGHT, z * 10)], new Vector3(0, 90, 0), 0.5f).setEaseInCubic();
         }
     }
     void SetObjectColor(GameObject obj, Color color)

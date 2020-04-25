@@ -264,7 +264,7 @@ public class River : MonoBehaviour
                 GameObject waterObj = Instantiate(waterPrefab);
                 Vector3 waterObjPos = new Vector3(currentPos.x * 10, WATER_TILE_HEIGHT, currentPos.y * 10);
                 waterObj.transform.position = new Vector3(currentPos.x * 10, WATER_TILE_HEIGHT, currentPos.y * 10);
-               if (!animate && !prevWaterPositions.Contains(waterObj.transform.position))
+                if (!animate && !prevWaterPositions.Contains(waterObj.transform.position))
                 {
                     animate = true;
                 }
@@ -278,12 +278,14 @@ public class River : MonoBehaviour
                         if (direction.x == 0)
                         {
                             picker.RotateSplit(currentPos.x, currentPos.y, true);
+                            previousDirection = direction;
                             direction = new Vector2(-1, 0);
                             GenerateRiver(new Vector2(currentPos.x + 1, currentPos.y + 0), new Vector2(1, 0), positions, delay, animate);
                         }
                         else
                         {
                             picker.RotateSplit(currentPos.x, currentPos.y, false);
+                            previousDirection = direction;
                             direction = new Vector2(0, -1);
                             GenerateRiver(new Vector2(currentPos.x + 0, currentPos.y + 1), new Vector2(0, 1), positions, delay, animate);
                         }
@@ -304,10 +306,6 @@ public class River : MonoBehaviour
                         else
                         {
                             bridge.over = true;
-                        }
-
-                        if (bridge.over && bridge.under)
-                        {
                             waterObj.SetActive(true);
                         }
 
@@ -325,8 +323,9 @@ public class River : MonoBehaviour
                 {
                     waterObj.transform.localScale = new Vector3(0, 0, 0);
                     animatingCount++;
-                    if(split){
-                        PlaceSplitFillers(previousDirection,waterObj,delay);
+                    if (split)
+                    {
+                        PlaceSplitFillers(previousDirection, waterObj, delay);
                         LeanTween.scale(waterObj, new Vector3(9, 9, 10), 0.3f).setEase(LeanTweenType.easeOutBounce).setDelay(delay).setOnComplete(OnAnimationComplete);
                     }
                     else if (!normalBend)
@@ -337,7 +336,7 @@ public class River : MonoBehaviour
                     {
                         if (Mathf.Abs(direction.x) != Mathf.Abs(previousDirection.x))
                         {
-                            PlaceFillers(direction, previousDirection, waterObj,delay);
+                            PlaceFillers(direction, previousDirection, waterObj, delay);
                             LeanTween.scale(waterObj, new Vector3(9, 9, 10), 0.3f).setEase(LeanTweenType.easeOutBounce).setDelay(delay).setOnComplete(OnAnimationComplete);
                         }
                         else
@@ -348,9 +347,10 @@ public class River : MonoBehaviour
                     delay += 0.1f;
                 }
                 else
-                {   
-                    if(split){
-                        PlaceSplitFillers(previousDirection,waterObj,delay);
+                {
+                    if (split)
+                    {
+                        PlaceSplitFillers(previousDirection, waterObj, -1);
                         waterObj.transform.localScale = new Vector3(9, 9, 10);
                     }
                     else if (!normalBend)
@@ -361,7 +361,7 @@ public class River : MonoBehaviour
                     {
                         if (Mathf.Abs(direction.x) != Mathf.Abs(previousDirection.x))
                         {
-                            PlaceFillers(direction, previousDirection, waterObj,-1);
+                            PlaceFillers(direction, previousDirection, waterObj, -1);
                             waterObj.transform.localScale = new Vector3(9, 9, 10);
                         }
                         else
@@ -379,7 +379,7 @@ public class River : MonoBehaviour
         {
             CheckIfWin();
         }
-        
+
     }
 
     void PlaceFillers(Vector3 direction, Vector3 previousDirection, GameObject waterObj, float delay)
@@ -397,47 +397,69 @@ public class River : MonoBehaviour
             down.transform.position = new Vector3(waterObj.transform.position.x, WATER_TILE_HEIGHT, waterObj.transform.position.z + (WATER_TILE_RADIUS * direction.y));
             across.transform.position = new Vector3(waterObj.transform.position.x - (WATER_TILE_RADIUS * previousDirection.x), WATER_TILE_HEIGHT, waterObj.transform.position.z);
         }
-        if(delay != -1){
-            across.transform.localScale = new Vector3(0,0,0);
-            down.transform.localScale = new Vector3(0,0,0);
-            LeanTween.scale(across, new Vector3(9,1,1),0.3f).setDelay(delay);
-            LeanTween.scale(down, new Vector3(9,1,1),0.3f).setDelay(delay);
+        if (delay != -1)
+        {
+            across.transform.localScale = new Vector3(0, 0, 0);
+            down.transform.localScale = new Vector3(0, 0, 0);
+            LeanTween.scale(across, new Vector3(9, 1, 1), 0.3f).setDelay(delay);
+            LeanTween.scale(down, new Vector3(9, 1, 1), 0.3f).setDelay(delay);
         }
 
         fillers.Add(across);
         fillers.Add(down);
     }
 
-    void PlaceSplitFillers(Vector3 previousDirection, GameObject waterObj, float delay){
+    void PlaceSplitFillers(Vector3 previousDirection, GameObject waterObj, float delay)
+    {
 
-        if(previousDirection.x != 0){
+        GameObject a;
+        GameObject b;
+        GameObject c;
 
-            GameObject across = Instantiate(fillerAcross);
-            GameObject up = Instantiate(fillerDown);
-            GameObject down = Instantiate(fillerDown);
-    
-            across.transform.position = new Vector3(waterObj.transform.position.x + (WATER_TILE_RADIUS * -previousDirection.x), WATER_TILE_HEIGHT, waterObj.transform.position.z);
-            down.transform.position = new Vector3(waterObj.transform.position.x, WATER_TILE_HEIGHT, waterObj.transform.position.z - (WATER_TILE_RADIUS));
-            up.transform.position = new Vector3(waterObj.transform.position.x, WATER_TILE_HEIGHT, waterObj.transform.position.z + (WATER_TILE_RADIUS));
-            
-            fillers.Add(across);
-            fillers.Add(up);
-            fillers.Add(down);
+        if (previousDirection.x != 0)
+        {
 
-        }else{
+            a = Instantiate(fillerAcross);
+            b = Instantiate(fillerDown);
+            c = Instantiate(fillerDown);
 
-            GameObject left = Instantiate(fillerAcross);
-            GameObject right = Instantiate(fillerAcross);
-            GameObject down = Instantiate(fillerDown);
-    
-            left.transform.position = new Vector3(waterObj.transform.position.x + (WATER_TILE_RADIUS ), WATER_TILE_HEIGHT, waterObj.transform.position.z);
-            right.transform.position = new Vector3(waterObj.transform.position.x - (WATER_TILE_RADIUS ), WATER_TILE_HEIGHT, waterObj.transform.position.z);
-            down.transform.position = new Vector3(waterObj.transform.position.x, WATER_TILE_HEIGHT, waterObj.transform.position.z + (WATER_TILE_RADIUS * -previousDirection.y));
-            
-            fillers.Add(left);
-            fillers.Add(right);
-            fillers.Add(down);
+            a.transform.position = new Vector3(waterObj.transform.position.x + (WATER_TILE_RADIUS * -previousDirection.x), WATER_TILE_HEIGHT, waterObj.transform.position.z);
+            b.transform.position = new Vector3(waterObj.transform.position.x, WATER_TILE_HEIGHT, waterObj.transform.position.z - (WATER_TILE_RADIUS));
+            c.transform.position = new Vector3(waterObj.transform.position.x, WATER_TILE_HEIGHT, waterObj.transform.position.z + (WATER_TILE_RADIUS));
+
+            fillers.Add(a);
+            fillers.Add(b);
+            fillers.Add(c);
+
         }
+        else
+        {
+
+            a = Instantiate(fillerAcross);
+            b = Instantiate(fillerAcross);
+            c = Instantiate(fillerDown);
+
+            a.transform.position = new Vector3(waterObj.transform.position.x + (WATER_TILE_RADIUS), WATER_TILE_HEIGHT, waterObj.transform.position.z);
+            b.transform.position = new Vector3(waterObj.transform.position.x - (WATER_TILE_RADIUS), WATER_TILE_HEIGHT, waterObj.transform.position.z);
+            c.transform.position = new Vector3(waterObj.transform.position.x, WATER_TILE_HEIGHT, waterObj.transform.position.z + (WATER_TILE_RADIUS * -previousDirection.y));
+
+            fillers.Add(a);
+            fillers.Add(b);
+            fillers.Add(c);
+        }
+
+        if (delay != -1)
+        {
+            a.transform.localScale = new Vector3(0, 0, 0);
+            b.transform.localScale = new Vector3(0, 0, 0);
+            c.transform.localScale = new Vector3(0, 0, 0);
+
+            LeanTween.scale(a, new Vector3(9, 1, 1), 0.3f).setDelay(delay);
+            LeanTween.scale(b, new Vector3(9, 1, 1), 0.3f).setDelay(delay);
+            LeanTween.scale(c, new Vector3(9, 1, 1), 0.3f).setDelay(delay);
+
+        }
+
 
     }
 

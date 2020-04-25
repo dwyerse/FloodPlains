@@ -9,6 +9,7 @@ public class LevelGenerator : MonoBehaviour
     public List<Vector3> fields = new List<Vector3>();
     public PipeData pipeData = new PipeData();
     public string level;
+    public static float HOUSE_HEIGHT = 0.01f;
 
     public void GenerateLevel(string l)
     {
@@ -24,11 +25,11 @@ public class LevelGenerator : MonoBehaviour
                 Color pixelColor = map.GetPixel(x, y);
                 if (pixelColor.Equals(Color.red))
                 {
-                    houses.Add(new Vector3(x * 10, 0.01f, y * 10));
+                    houses.Add(new Vector3(x * 10, HOUSE_HEIGHT, y * 10));
                 }
                 else if (pixelColor.Equals(Color.green))
                 {
-                    fields.Add(new Vector3(x * 10, 0.01f, y * 10));
+                    fields.Add(new Vector3(x * 10, HOUSE_HEIGHT, y * 10));
                 }
             }
         }

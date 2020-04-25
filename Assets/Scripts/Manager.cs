@@ -6,8 +6,6 @@ using UnityEngine;
 public class Manager : MonoBehaviour
 {
     public string currentLevel = "1";
-    public bool levelActive = false;
-    public bool paused = false;
 
     public GameObject levelComplete;
     public LevelGenerator levelGen;
@@ -16,6 +14,28 @@ public class Manager : MonoBehaviour
     public GameObject cameraTarget;
     public GameObject menuTarget;
     public GameObject menu;
+
+    public bool allowEscape = false;
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && allowEscape)
+        {
+            PausedFinished();
+            allowEscape = false;
+        }
+    }
+
+    public void PausedFinished()
+    {
+        picker.Clear();
+        river.Clear();
+        LeanTween.move(cameraTarget, menuTarget.transform.position, 1.5f).setEaseInOutCubic().setOnComplete(() =>
+                {
+                    menu.GetComponent<Menu>().enabled = true;
+                    menu.GetComponent<Menu>().UpdateColors();
+                });
+    }
 
     public void levelFinished()
     {
@@ -29,13 +49,16 @@ public class Manager : MonoBehaviour
 
         GameObject level = GameObject.Find(currentLevel);
         LevelState levelState = level.GetComponent<LevelState>();
-        levelState.complete = true;
-        levelState.recentlyUpdated = true;
-        foreach (GameObject child in levelState.children)
+        if (levelState.complete != true)
         {
-            PlayerPrefs.SetString("Available " + child.name, "true");
-            child.GetComponent<LevelState>().available = true;
-            child.GetComponent<LevelState>().recentlyUpdated = true;
+            levelState.complete = true;
+            levelState.recentlyUpdated = true;
+            foreach (GameObject child in levelState.children)
+            {
+                PlayerPrefs.SetString("Available " + child.name, "true");
+                child.GetComponent<LevelState>().available = true;
+                child.GetComponent<LevelState>().recentlyUpdated = true;
+            }
         }
 
     }
@@ -55,6 +78,7 @@ public class Manager : MonoBehaviour
 
     public void StartLevel()
     {
+        allowEscape = true;
         picker.Init();
         river.Init();
     }
