@@ -9,7 +9,12 @@ public class LevelState : MonoBehaviour
     public bool available = false;
     public bool recentlyUpdated = false;
 
+    public bool moveable = false;
+    public Vector3 toLocation;
+
     public List<GameObject> children;
+
+    public List<GameObject> parents;
 
 
     void Start()

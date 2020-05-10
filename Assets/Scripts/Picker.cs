@@ -34,8 +34,8 @@ public class Picker : MonoBehaviour
         level = manager.levelGen;
         for (int i = 0; i < indicatorPrefabs.Length; i++)
         {
-            string[] split = level.level.Split('-');
-            int pipeNum = level.pipeData.pipes[Int32.Parse(split[0]), i];
+
+            int pipeNum = level.pipeData.pipes[Int32.Parse(level.level), i];
 
             for (int p = 0; p < pipeNum; p++)
             {
