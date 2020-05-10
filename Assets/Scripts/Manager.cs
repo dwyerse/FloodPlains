@@ -15,7 +15,11 @@ public class Manager : MonoBehaviour
     public GameObject menuTarget;
     public GameObject menu;
 
+    public GameObject winGame;
+
     public bool allowEscape = false;
+
+    public string FINAL_LEVEL = "23";
 
     void Update()
     {
@@ -39,6 +43,10 @@ public class Manager : MonoBehaviour
 
     public void levelFinished()
     {
+
+
+
+        allowEscape = false;
         picker.Clear();
         river.Clear();
         levelComplete.GetComponent<CanvasGroup>().alpha = 0;
@@ -48,6 +56,8 @@ public class Manager : MonoBehaviour
         PlayerPrefs.SetString("Complete " + currentLevel, "true");
 
         GameObject level = GameObject.Find(currentLevel);
+
+
         LevelState levelState = level.GetComponent<LevelState>();
         if (levelState.complete != true)
         {
@@ -55,9 +65,35 @@ public class Manager : MonoBehaviour
             levelState.recentlyUpdated = true;
             foreach (GameObject child in levelState.children)
             {
-                PlayerPrefs.SetString("Available " + child.name, "true");
-                child.GetComponent<LevelState>().available = true;
-                child.GetComponent<LevelState>().recentlyUpdated = true;
+                print("asdf");
+
+                LevelState childLevelState = child.GetComponent<LevelState>();
+                if (childLevelState.parents.Count > 0)
+                {
+                    print("HERE");
+                    bool all = true;
+                    foreach (GameObject parent in childLevelState.parents)
+                    {
+                        if (!
+                        parent.GetComponent<LevelState>().complete)
+                        {
+                            all = false;
+                        }
+
+                    }
+                    if (all)
+                    {
+                        PlayerPrefs.SetString("Available " + child.name, "true");
+                        childLevelState.available = true;
+                        childLevelState.recentlyUpdated = true;
+                    }
+                }
+                else
+                {
+                    PlayerPrefs.SetString("Available " + child.name, "true");
+                    childLevelState.available = true;
+                    childLevelState.recentlyUpdated = true;
+                }
             }
         }
 
@@ -73,6 +109,17 @@ public class Manager : MonoBehaviour
         {
             menu.GetComponent<Menu>().enabled = true;
             menu.GetComponent<Menu>().UpdateColors();
+
+            if (currentLevel.Equals(FINAL_LEVEL))
+            {
+                winGame.GetComponent<CanvasGroup>().alpha = 0;
+                winGame.SetActive(true);
+                LeanTween.alphaCanvas(winGame.GetComponent<CanvasGroup>(), 1, 2f).setEaseInOutCubic().setOnComplete(() =>
+                {
+                    LeanTween.alphaCanvas(winGame.GetComponent<CanvasGroup>(), 0, 2f).setDelay(5).setEaseInOutCubic();
+
+                });
+            }
         });
     }
 

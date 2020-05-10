@@ -12,8 +12,8 @@ public class Menu : MonoBehaviour
     GameObject prevSelected;
     public Manager manager;
     Color prevMaterial;
-    // Update is called once per frame
-
+    bool allowSelect = true;
+    bool specialCase = false;
     public Material availableMaterial;
     public Material completeMaterial;
     GameObject[] levels;
@@ -28,11 +28,21 @@ public class Menu : MonoBehaviour
             if (PlayerPrefs.GetString("Complete " + level.name) != "")
             {
                 level.GetComponent<Renderer>().material.SetFloat("Vector1_F1298B07", 1f);
+                if (level.GetComponent<LevelState>().parents.Count > 0)
+                {
+                    specialCase = true;
+                    LeanTween.moveLocal(level, level.GetComponent<LevelState>().toLocation, 7f).setEaseOutCubic().setOnComplete(StopSpecialCase);
+                }
 
             }
             else if (PlayerPrefs.GetString("Available " + level.name) != "")
             {
                 level.GetComponent<Renderer>().material.SetFloat("Vector1_4489BF63", 1f);
+                if (level.GetComponent<LevelState>().parents.Count > 0)
+                {
+                    specialCase = true;
+                    LeanTween.moveLocal(level, level.GetComponent<LevelState>().toLocation, 7f).setEaseOutCubic().setOnComplete(StopSpecialCase);
+                }
             }
 
         }
@@ -47,75 +57,113 @@ public class Menu : MonoBehaviour
 
             if (levelState.recentlyUpdated)
             {
-                if (levelState.complete)
-                {
-                    LeanTween.value(level, (value) =>
-                    {
-                        level.GetComponent<Renderer>().material.SetFloat("Vector1_F1298B07", value);
-                    }, level.GetComponent<Renderer>().material.GetFloat("Vector1_4489BF63"), 1, 0.5f).setEaseOutQuad();
+                allowSelect = false;
 
+                if (levelState.parents.Count > 0)
+                {
+                    specialCase = true;
+                    LeanTween.moveLocal(levelState.gameObject, levelState.toLocation, 7f).setEaseOutCubic().setOnComplete(StopSpecialCase);
+                    if (levelState.complete)
+                    {
+                        LeanTween.value(level, (value) =>
+                        {
+                            level.GetComponent<Renderer>().material.SetFloat("Vector1_F1298B07", value);
+                        }, level.GetComponent<Renderer>().material.GetFloat("Vector1_4489BF63"), 1, 0.5f).setEaseOutQuad();
+
+                    }
+                    else if (levelState.available)
+                    {
+                        LeanTween.value(level, (value) =>
+                        {
+                            level.GetComponent<Renderer>().material.SetFloat("Vector1_4489BF63", value);
+                        }, level.GetComponent<Renderer>().material.GetFloat("Vector1_808204E5"), 1, 0.5f).setEaseOutQuad();
+
+                    }
                 }
-                else if (levelState.available)
+                else
                 {
-                    LeanTween.value(level, (value) =>
+                    if (levelState.complete)
                     {
-                        level.GetComponent<Renderer>().material.SetFloat("Vector1_4489BF63", value);
-                    }, level.GetComponent<Renderer>().material.GetFloat("Vector1_808204E5"), 1, 0.5f).setEaseOutQuad();
+                        LeanTween.value(level, (value) =>
+                        {
+                            level.GetComponent<Renderer>().material.SetFloat("Vector1_F1298B07", value);
+                        }, level.GetComponent<Renderer>().material.GetFloat("Vector1_4489BF63"), 1, 0.5f).setEaseOutQuad().setOnComplete(TurnOnSelect);
 
+                    }
+                    else if (levelState.available)
+                    {
+                        LeanTween.value(level, (value) =>
+                        {
+                            level.GetComponent<Renderer>().material.SetFloat("Vector1_4489BF63", value);
+                        }, level.GetComponent<Renderer>().material.GetFloat("Vector1_808204E5"), 1, 0.5f).setEaseOutQuad().setOnComplete(TurnOnSelect);
+
+                    }
                 }
                 levelState.recentlyUpdated = false;
             }
-
         }
+    }
+
+    void TurnOnSelect()
+    {
+        print("Allow Select");
+        allowSelect = true;
+    }
+
+    void StopSpecialCase()
+    {
+        specialCase = false;
     }
 
     void Update()
     {
-
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        current = null;
-        if (Physics.Raycast(ray, out hit))
+        if (allowSelect && !specialCase)
         {
-            current = hit.collider.gameObject;
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (current != prevSelected)
+            current = null;
+            if (Physics.Raycast(ray, out hit))
+            {
+                current = hit.collider.gameObject;
+
+                if (current != prevSelected)
+                {
+                    if (prevSelected != null)
+                    {
+                        Unhighlight(prevSelected);
+                    }
+                    prevSelected = current;
+                    Highlight(current);
+                }
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (PlayerPrefs.GetString("Available " + hit.collider.gameObject.name) != "")
+                    {
+                        Unhighlight(current);
+                        manager.PrepareLevel(hit.collider.gameObject.name);
+                        LeanTween.move(cameraTarget, levelTarget.transform.position, 1.5f).setEaseInOutCubic().setOnComplete(() =>
+                        {
+                            manager.StartLevel();
+                        });
+                        gameObject.GetComponent<Menu>().enabled = false;
+                    }
+                    else
+                    {
+                        ErrorHighlight(hit.collider.gameObject);
+
+                        print("Not available");
+                    }
+                }
+            }
+            else
             {
                 if (prevSelected != null)
                 {
                     Unhighlight(prevSelected);
+                    prevSelected = null;
                 }
-                prevSelected = current;
-                Highlight(current);
-            }
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (PlayerPrefs.GetString("Available " + hit.collider.gameObject.name) != "")
-                {
-                    Unhighlight(current);
-                    manager.PrepareLevel(hit.collider.gameObject.name);
-                    LeanTween.move(cameraTarget, levelTarget.transform.position, 1.5f).setEaseInOutCubic().setOnComplete(() =>
-                    {
-                        manager.StartLevel();
-                    });
-                    gameObject.GetComponent<Menu>().enabled = false;
-                }
-                else
-                {
-                    ErrorHighlight(hit.collider.gameObject);
-
-                    print("Not available");
-                }
-            }
-        }
-        else
-        {
-            if (prevSelected != null)
-            {
-                Unhighlight(prevSelected);
-                prevSelected = null;
             }
         }
 
