@@ -116,7 +116,10 @@ public class Manager : MonoBehaviour
                 winGame.SetActive(true);
                 LeanTween.alphaCanvas(winGame.GetComponent<CanvasGroup>(), 1, 2f).setEaseInOutCubic().setOnComplete(() =>
                 {
-                    LeanTween.alphaCanvas(winGame.GetComponent<CanvasGroup>(), 0, 2f).setDelay(5).setEaseInOutCubic();
+                    LeanTween.alphaCanvas(winGame.GetComponent<CanvasGroup>(), 0, 2f).setDelay(5).setEaseInOutCubic().setOnComplete(() =>
+                        {
+                            winGame.SetActive(false);
+                        });
 
                 });
             }
