@@ -56,7 +56,7 @@ public class River : MonoBehaviour
             field.transform.localScale = new Vector3(0, 0, 0);
             fieldObjects.Add(field);
             field.transform.position = fieldPos;
-            LeanTween.scale(field, new Vector3(1, 1, 1), 0.15f).setDelay(delay);
+            LeanTween.scale(field, new Vector3(5, 5, 5), 0.15f).setDelay(delay);
             delay += 0.1f;
         }
 
@@ -99,6 +99,7 @@ public class River : MonoBehaviour
         }
 
         waterPositions.Clear();
+        prevWaterPositions.Clear();
         bends = null;
 
     }

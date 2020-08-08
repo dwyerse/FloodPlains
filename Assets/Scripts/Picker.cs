@@ -82,7 +82,7 @@ public class Picker : MonoBehaviour
 
             if (river.houses.Contains(new Vector3(x, LevelGenerator.HOUSE_HEIGHT, z)) || river.fields.Contains(new Vector3(x, LevelGenerator.HOUSE_HEIGHT, z)))
             {
-                currentMode.transform.position = new Vector3(x, 5, z);
+                currentMode.transform.position = new Vector3(x, 5.5f, z);
                 SetObjectColor(currentMode, new Color32(0x7b, 0x7b, 0x7b, 0xFF));
             }
             else

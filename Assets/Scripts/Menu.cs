@@ -68,7 +68,7 @@ public class Menu : MonoBehaviour
                         LeanTween.value(level, (value) =>
                         {
                             level.GetComponent<Renderer>().material.SetFloat("Vector1_F1298B07", value);
-                        }, level.GetComponent<Renderer>().material.GetFloat("Vector1_4489BF63"), 1, 0.5f).setEaseOutQuad();
+                        }, level.GetComponent<Renderer>().material.GetFloat("Vector1_4489BF63"), 1, 0.5f).setEaseOutQuad().setOnComplete(TurnOnSelect); ;
 
                     }
                     else if (levelState.available)
@@ -76,7 +76,7 @@ public class Menu : MonoBehaviour
                         LeanTween.value(level, (value) =>
                         {
                             level.GetComponent<Renderer>().material.SetFloat("Vector1_4489BF63", value);
-                        }, level.GetComponent<Renderer>().material.GetFloat("Vector1_808204E5"), 1, 0.5f).setEaseOutQuad();
+                        }, level.GetComponent<Renderer>().material.GetFloat("Vector1_808204E5"), 1, 0.5f).setEaseOutQuad().setOnComplete(TurnOnSelect); ;
 
                     }
                 }

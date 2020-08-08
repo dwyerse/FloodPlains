@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
+using System;
 
 public class Manager : MonoBehaviour
 {
@@ -17,15 +18,23 @@ public class Manager : MonoBehaviour
 
     public GameObject winGame;
 
+    public List<string> tutorials;
+    public TextMeshProUGUI tutorialText;
+    public CanvasGroup tutorialCanvas;
+    public CanvasGroup escapeCanvas;
+
+    public GameObject selectLevelText;
+
     public bool allowEscape = false;
 
-    public string FINAL_LEVEL = "23";
+    public static string FINAL_LEVEL = "23";
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) && allowEscape)
         {
             PausedFinished();
+            LeanTween.alphaCanvas(tutorialCanvas, 0, 0.5f);
             allowEscape = false;
         }
     }
@@ -43,8 +52,7 @@ public class Manager : MonoBehaviour
 
     public void levelFinished()
     {
-
-
+        LeanTween.alphaCanvas(tutorialCanvas, 0, 0.5f);
 
         allowEscape = false;
         picker.Clear();
@@ -65,12 +73,9 @@ public class Manager : MonoBehaviour
             levelState.recentlyUpdated = true;
             foreach (GameObject child in levelState.children)
             {
-                print("asdf");
-
                 LevelState childLevelState = child.GetComponent<LevelState>();
                 if (childLevelState.parents.Count > 0)
                 {
-                    print("HERE");
                     bool all = true;
                     foreach (GameObject parent in childLevelState.parents)
                     {
@@ -131,10 +136,27 @@ public class Manager : MonoBehaviour
         allowEscape = true;
         picker.Init();
         river.Init();
+        LeanTween.alphaCanvas(tutorialCanvas, 1, 0.5f).setOnComplete(ShowEscape);
+        selectLevelText.SetActive(false);
+    }
+
+    public void ShowEscape()
+    {
+        if (Int32.Parse(currentLevel) < 4)
+        {
+            LeanTween.alphaCanvas(escapeCanvas, 1, 0.5f).setEaseInOutCubic().setDelay(2).setOnComplete(HideEscape);
+        }
+    }
+
+    public void HideEscape()
+    {
+        LeanTween.alphaCanvas(escapeCanvas, 0, 0.5f).setEaseInOutCubic().setDelay(3);
     }
 
     public void PrepareLevel(string level)
     {
+        int tut = Int32.Parse(level);
+        tutorialText.text = tutorials[tut];
         currentLevel = level;
         picker.Clear();
         river.Clear();
